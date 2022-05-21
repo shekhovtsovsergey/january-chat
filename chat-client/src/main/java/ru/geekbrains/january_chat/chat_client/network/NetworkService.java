@@ -26,6 +26,7 @@ public class NetworkService {
         this.in = new DataInputStream(socket.getInputStream());
         this.out = new DataOutputStream(socket.getOutputStream());
         readMessages();
+
     }
 
     public void readMessages() {

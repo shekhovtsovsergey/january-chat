@@ -13,11 +13,11 @@ public class InMemoryAuthService implements AuthService {
     public InMemoryAuthService() {
         this.users = new ArrayList<>();
         users.addAll(List.of(
-                new User("log1", "pass", "nick1", "secret"),
-                new User("log2", "pass", "nick2", "secret"),
-                new User("log3", "pass", "nick3", "secret"),
-                new User("log4", "pass", "nick4", "secret"),
-                new User("log5", "pass", "nick5", "secret")
+                new User("111", "111", "nick1", "secret"),
+                new User("222", "222", "nick2", "secret"),
+                new User("333", "333", "nick3", "secret"),
+                new User("444", "444", "nick4", "secret"),
+                new User("555", "555", "nick5", "secret")
         ));
     }
 
