@@ -1,6 +1,7 @@
 package ru.geekbrains.january_chat.chat_server.server;
 
 import ru.geekbrains.january_chat.chat_server.auth.AuthService;
+import ru.geekbrains.january_chat.chat_server.db.SqlClient;
 import ru.geekbrains.january_chat.props.PropertyReader;
 
 import java.io.IOException;
@@ -29,12 +30,14 @@ public class Server {
                 System.out.println("Client connected");
                 var clientHandler = new ClientHandler(socket, this);
                 clientHandler.handle();
+                SqlClient.connect();
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             authService.stop();
             shutdown();
+            SqlClient.disconnect();
         }
     }
 
@@ -89,7 +92,7 @@ public class Server {
     }
 
     private void shutdown() {
-
+        SqlClient.disconnect();
     }
 
     public AuthService getAuthService() {

@@ -1,5 +1,6 @@
 package ru.geekbrains.january_chat.chat_server.auth;
 
+import ru.geekbrains.january_chat.chat_server.db.SqlClient;
 import ru.geekbrains.january_chat.chat_server.entity.User;
 import ru.geekbrains.january_chat.chat_server.error.WrongCredentialsException;
 
@@ -33,6 +34,7 @@ public class InMemoryAuthService implements AuthService {
 
     @Override
     public String authorizeUserByLoginAndPassword(String login, String password) {
+    /*
         for (User user : users) {
             if (login.equals(user.getLogin()) && password.equals(user.getPassword())) {
                 return user.getNick();
@@ -40,6 +42,19 @@ public class InMemoryAuthService implements AuthService {
         }
         throw new WrongCredentialsException("Wrong username or password");
     }
+    */
+
+
+        String nickname = SqlClient.getNick(login, password);
+        if (nickname == null) {
+            throw new WrongCredentialsException("Wrong username or password");
+        }
+        System.out.println("login = " + login + ", password = " + password);
+        return nickname;
+
+    }
+
+
 
     @Override
     public String changeNick(String login, String newNick) {
