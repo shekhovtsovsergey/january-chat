@@ -1,5 +1,6 @@
 package ru.geekbrains.january_chat.chat_server.auth;
 
+import ru.geekbrains.january_chat.chat_server.db.SqlClient;
 import ru.geekbrains.january_chat.chat_server.entity.User;
 import ru.geekbrains.january_chat.chat_server.error.WrongCredentialsException;
 
@@ -13,11 +14,11 @@ public class InMemoryAuthService implements AuthService {
     public InMemoryAuthService() {
         this.users = new ArrayList<>();
         users.addAll(List.of(
-                new User("log1", "pass", "nick1", "secret"),
-                new User("log2", "pass", "nick2", "secret"),
-                new User("log3", "pass", "nick3", "secret"),
-                new User("log4", "pass", "nick4", "secret"),
-                new User("log5", "pass", "nick5", "secret")
+                new User("111", "111", "nick1", "secret"),
+                new User("222", "222", "nick2", "secret"),
+                new User("333", "333", "nick3", "secret"),
+                new User("444", "444", "nick4", "secret"),
+                new User("555", "555", "nick5", "secret")
         ));
     }
 
@@ -33,6 +34,7 @@ public class InMemoryAuthService implements AuthService {
 
     @Override
     public String authorizeUserByLoginAndPassword(String login, String password) {
+    /*
         for (User user : users) {
             if (login.equals(user.getLogin()) && password.equals(user.getPassword())) {
                 return user.getNick();
@@ -40,6 +42,19 @@ public class InMemoryAuthService implements AuthService {
         }
         throw new WrongCredentialsException("Wrong username or password");
     }
+    */
+
+
+        String nickname = SqlClient.getNick(login, password);
+        if (nickname == null) {
+            throw new WrongCredentialsException("Wrong username or password");
+        }
+        System.out.println("login = " + login + ", password = " + password);
+        return nickname;
+
+    }
+
+
 
     @Override
     public String changeNick(String login, String newNick) {
