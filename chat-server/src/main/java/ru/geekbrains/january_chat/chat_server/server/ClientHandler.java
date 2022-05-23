@@ -51,6 +51,7 @@ public class ClientHandler {
             switch (splitMessage[0]) {
                 case "/w":
                     server.privateMessage(this.user, splitMessage[1], splitMessage[2], this);
+
                     break;
                 case "/broadcast":
                     server.broadcastMessage(user, splitMessage[1]);

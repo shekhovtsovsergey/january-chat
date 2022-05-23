@@ -10,9 +10,10 @@ import javafx.scene.layout.VBox;
 import ru.geekbrains.january_chat.chat_client.network.MessageProcessor;
 import ru.geekbrains.january_chat.chat_client.network.NetworkService;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainChatController implements Initializable, MessageProcessor {
@@ -60,7 +61,7 @@ public class MainChatController implements Initializable, MessageProcessor {
     @FXML
     private Button btnSend;
 
-    public void connectToServer(ActionEvent actionEvent) {
+    public void connectToServer(ActionEvent actionEvent) throws IOException {
     }
 
     public void disconnectFromServer(ActionEvent actionEvent) {
@@ -100,16 +101,26 @@ public class MainChatController implements Initializable, MessageProcessor {
 
     @Override
     public void processMessage(String message) {
-        Platform.runLater(() -> parseIncomingMessage(message));
+        Platform.runLater(() -> {
+            try {
+                parseIncomingMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private void parseIncomingMessage(String message) {
+    private void parseIncomingMessage(String message) throws IOException {
         var splitMessage = message.split(REGEX);
+        String login = this.nick;
+        String filename = "history_" + login + ".txt";
+        String filenameGeneral = "history_.txt";
         switch (splitMessage[0]) {
             case "/auth_ok":
                 this.nick = splitMessage[1];
                 loginPanel.setVisible(false);
                 mainChatPanel.setVisible(true);
+                loadHistory();
                 break;
             case "/error":
                 showError(splitMessage[1]);
@@ -130,6 +141,8 @@ public class MainChatController implements Initializable, MessageProcessor {
                 break;
             default:
                 mainChatArea.appendText(splitMessage[0] + System.lineSeparator());
+                writeFileLog(filename, message);
+                writeFileLog(filenameGeneral, message);
                 break;
         }
     }
@@ -177,7 +190,7 @@ public class MainChatController implements Initializable, MessageProcessor {
         networkService.sendMessage(message);
     }
 
-    public void returnToChat(ActionEvent actionEvent) {
+    public void returnToChat(ActionEvent actionEvent) throws IOException {
         changeNickPanel.setVisible(false);
         changePasswordPanel.setVisible(false);
         mainChatPanel.setVisible(true);
@@ -192,4 +205,59 @@ public class MainChatController implements Initializable, MessageProcessor {
         mainChatPanel.setVisible(false);
         changePasswordPanel.setVisible(true);
     }
+
+
+
+
+    private static void writeFileLog(String filename, String message) throws IOException {
+
+        File file2 = new File(filename);
+
+        if (file2.exists()) {
+            Writer writer = new FileWriter(file2, true);
+            String line = message;
+            System.out.println(line);
+            writer.append(line + "\n");
+            writer.flush();
+        } else {
+            file2.createNewFile();
+            Writer writer = new FileWriter(file2);
+            String line = message;
+            System.out.println(line);
+            writer.append(line + "\n");
+            writer.flush();
+        }
+    }
+
+
+
+    private void loadHistory() throws IOException {
+
+        int posHistory = 100;
+        File history = new File("history_.txt");
+        List<String> historyList = new ArrayList<>();
+        FileInputStream in = new FileInputStream(history);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+
+        String temp;
+        while ((temp = bufferedReader.readLine()) != null) {
+            historyList.add(temp);
+        }
+
+        if (historyList.size() > posHistory) {
+            for (int i = historyList.size() - posHistory; i <= (historyList.size() - 1); i++) {
+                mainChatArea.appendText(historyList.get(i) + "\n");
+            }
+        } else {
+            for (int i = 0; i < posHistory; i++) {
+                mainChatArea.appendText(historyList.get(i) + "\n");
+            }
+        }
+    }
+
+
+
 }
+
+
+
