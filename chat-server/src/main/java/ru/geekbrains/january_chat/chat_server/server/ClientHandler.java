@@ -7,6 +7,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 public class ClientHandler {
     private Socket socket;
@@ -15,6 +17,9 @@ public class ClientHandler {
     private Thread handlerThread;
     private Server server;
     private String user;
+    private ExecutorService executorService;
+
+
 
     public ClientHandler(Socket socket, Server server) {
         try {
@@ -30,7 +35,9 @@ public class ClientHandler {
     }
 
     public void handle() {
-        handlerThread = new Thread(() -> {
+  //      handlerThread = new Thread(() -> {
+        executorService.execute(() -> {
+
             authorize();
             while (!Thread.currentThread().isInterrupted() && !socket.isClosed()) {
                 try {
@@ -42,7 +49,7 @@ public class ClientHandler {
                 }
             }
         });
-        handlerThread.start();
+  //      handlerThread.start();
     }
 
     private void handleMessage(String message) {

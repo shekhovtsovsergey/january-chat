@@ -8,14 +8,19 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     public static final String REGEX = "%!%";
     private final int port;
     private final AuthService authService;
     private final List<ClientHandler> clientHandlers;
+    private final ExecutorService executorService;
 
-    public Server(AuthService authService) {
+
+    public Server(AuthService authService, ExecutorService executorService) {
+        this.executorService = Executors.newCachedThreadPool();
         port = PropertyReader.getInstance().getPort();
         this.clientHandlers = new ArrayList<>();
         this.authService = authService;
