@@ -6,8 +6,8 @@ public class Lesson6 {
 
     public static void main(String[] args) {
 
-        System.out.println(Arrays.toString(testArrayOperation(new int[]{1, 2, 4, 2, 5, 8, 8, 6, 7, 5})));
-        System.out.println(testArray(new int[] {1,1,1,1,4,4,4,4,1,4,4}));
+        System.out.println(Arrays.toString(testArrayOperation(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10})));
+        System.out.println(testArray(new int[] {2, 2, 3, 3, 5, 6, 7, 8, 9, 10}));
 
     }
 
@@ -27,11 +27,9 @@ public class Lesson6 {
     public static boolean testArray(int[] array) {
         for (int i = 0; i < array.length; i++) {
             if (array[i] == 4 || array[i] == 1) {
-                System.out.println("true");
                 return true;
             }
         }
-        System.out.println("false");
         return false;
     }
 
