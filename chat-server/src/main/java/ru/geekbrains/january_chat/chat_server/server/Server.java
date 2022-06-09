@@ -1,5 +1,7 @@
 package ru.geekbrains.january_chat.chat_server.server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.geekbrains.january_chat.chat_server.auth.AuthService;
 import ru.geekbrains.january_chat.chat_server.db.SqlClient;
 import ru.geekbrains.january_chat.props.PropertyReader;
@@ -17,6 +19,8 @@ public class Server {
     private final AuthService authService;
     private final List<ClientHandler> clientHandlers;
     private final ExecutorService executorService;
+    private static final Logger log = LogManager.getLogger();
+
 
 
     public Server(AuthService authService, ExecutorService executorService) {
@@ -29,16 +33,20 @@ public class Server {
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server start!");
+            log.info("Server start!");
             while (true) {
                 System.out.println("Waiting for connection......");
+                log.info("Waiting for connection......");
                 var socket = serverSocket.accept();
                 System.out.println("Client connected");
+                log.info("Client connected");
                 var clientHandler = new ClientHandler(socket, this);
                 clientHandler.handle();
                 SqlClient.connect();
             }
         } catch (IOException e) {
             e.printStackTrace();
+            log.error(e);
         } finally {
             authService.stop();
             shutdown();
